@@ -62,6 +62,7 @@ server.on('error',(error) => {console.log(`error: ${error.message}`)})
 
 app.get('/raiz', (req, res)=>{
     res.send('<h1 style="color:blue">Bienvenidos al Servidor Express</h1>')
+    console.log("----")
 })
 
 let visitas = 0

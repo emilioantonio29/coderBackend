@@ -28,6 +28,22 @@
 
 
 import moment from 'moment';
+import fs from "fs";
+
+
 
 const time = moment.now()
 console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
+
+
+const read = () =>{
+    try{
+        const data = fs.readFileSync("./src/productoT.txt", "utf-8");
+        // let a = JSON.parse(data)
+        console.log(data) 
+        // console.log(a) 
+    }catch(err){
+        console.log(err)
+    }
+}
+read()

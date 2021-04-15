@@ -5,12 +5,15 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "moment": "^2.29.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
   "scripts": {
-    "start": "node src/express.js"
+    "start": "node src/desafio7.js"
   },
   "author": "",
   "license": "ISC"
