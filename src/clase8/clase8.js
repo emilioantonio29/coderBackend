@@ -1,0 +1,69 @@
+import express from 'express';
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//crea la aplicacion
+const app = express(); 
+
+// configurando el puerto 0, el servidor inicia en un puerto al azar que este libre
+const PORT = 7001
+
+const server = app.listen(PORT, () => {
+    console.log(`Servidor http escuchando en el puert ${server.address().port}`)
+})
+
+server.on('error',(error) => {console.log(`error: ${error.message}`)})
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// parseo a JSON
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+let USERS_DB = []
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//obtener datos
+app.get("/api/usuarios", (req, res)=>{
+    if(USERS_DB.length<1){
+        res.json({error: "no hay usuarios cargados"})
+    }
+    res.json(USERS_DB)
+})
+app.get("/api/usuarios/:id", (req, res)=>{
+    const {id} = req.params
+    const user = USERS_DB.filter(user => user.id == parseInt(id))[0];
+    if(user){
+        res.json(user)
+    }
+    res.json({error: "usuario no encontrado"})
+})
+// se pueden traer datos por parametros en la url a traves del objeto query del request. Tambien se pueden obtener de la propiedad params
+app.get("/api/usuarios2", (req, res)=>{
+    const {name} =  req.query;
+    if(name){
+        const filter = USERS_DB.filter(user => user.name === name);
+        res.json(filter)
+    }
+    res.json(USERS_DB)
+})
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//enviar datos
+app.post("/api/usuarios", (req, res)=>{
+    const data = req.body;
+    console.log(data);
+    data.id = USERS_DB.length +1;
+    USERS_DB.push(data);
+    res.status(200).json(data);
+})
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// delete
+app.delete("/api/usuarios/:id", (req, res)=>{
+    const {id} = req.params
+    USERS_DB = USERS_DB.filter(user => user.id !== parseInt(id));
+    res.send()//el delete no suele enviar dato
+})
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// REQUEST
+// POST(enviando datos en el body):      http://localhost:7001/api/usuarios
+// GET:                                  http://localhost:7001/api/usuarios | http://localhost:7001/api/usuarios/3 | http://localhost:7001/api/usuarios2?name=zun
+// DELETE:                               http://localhost:7001/api/usuarios/8
