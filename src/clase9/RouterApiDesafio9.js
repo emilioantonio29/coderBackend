@@ -69,7 +69,7 @@ function crearRouterApiProductos(){
     })
 
     // UPDATE
-    routerApiProductos.put("/productoss/:id", (req, res)=>{
+    routerApiProductos.put("/productos/:id", (req, res)=>{
         const data = req.body
         const {id} = req.params
         const producto = USERS_DB.filter(product => product.id == parseInt(id))[0];
