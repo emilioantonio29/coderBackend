@@ -7,13 +7,14 @@
   "dependencies": {
     "esm": "^3.2.25",
     "express": "^4.17.1",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "multer": "^1.4.2"
   },
   "devDependencies": {
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "start": "node src/desafio7.js"
+    "start": "node src/clase9/desafio9.js"
   },
   "author": "",
   "license": "ISC"
