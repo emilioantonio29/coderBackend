@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="clase10.js"></script>
+</head>
+<body>
+
+    <span></span>
+    <!-- 
+    EJERCICIO 1    
+    realizar una página web que permita mostrar datos personales de la siguiente forma: 
+    Con los datos que provienen desde un objeto:-->
+
+    <h1>Datos Personales</h1>
+
+    <ul id="datos"></ul>
+
+    <h1>Datos Personales2</h1>
+
+    <ul id="datos2"></ul>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js" 
+    integrity="sha512-RNLkV3d+aLtfcpEyFG8jRbnWHxUqVZozacROI4J2F1sTaDqo1dPQYs01OMi1t1w9Y2FdbSCDSQ2ZVdAC8bzgAg==" crossorigin="anonymous">
+    </script>
+
+    <script>
+        const template = Handlebars.compile("hola {{nombre}} {{apellido}}");
+        const html=template ({
+            nombre: "Emilio",
+            apellido: "Martinez"
+
+        })
+        // debugger;
+        document.querySelector('span').innerHTML=html
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //EJERCICIO 1
+        const template2 = Handlebars.compile(
+        `
+        <li>{{nombre}}</li>
+        <li>{{apellido}}</li>
+        <li>{{edad}}</li>
+        <li>{{email}}</li>
+        <li>{{telefono}}</li>
+        `
+        );
+        const ejercicio1=template2({
+            nombre: 'Emilio',
+            apellido: 'Martinez',
+            edad: 35,
+            email: 'test@test.com.ar',
+            telefono: '1199988811'
+
+        })
+        document.querySelector("#datos").innerHTML=ejercicio1
+
+        //EJERCICIO 1.2
+        const template22 = Handlebars.compile(
+        `
+        {{#each users}}
+            <li>{{this}}</li>
+        {{/each}}
+        `
+        );
+        const ejercicio11=template22(
+            {
+                users: ["Jose","Zun","Emilio"]
+            }
+        )
+        document.querySelector("#datos2").innerHTML=ejercicio11
+    </script>
+</body>
+</html>

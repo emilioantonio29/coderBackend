@@ -1,29 +1,18 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-DESAFIO:
-Sobre el proyecto entregable de la clase anterior, incorporar las siguientes rutas:
-Actualizar un producto (put) : '/api/productos/:id' -> devuelve producto actualizado
-Borrar un producto (delete) : '/api/productos/:id' -> devuelve producto eliminado
+/* 
 
-El formato del objeto a actualizar será:
-{
-    title: (nombre del producto),
-    price: (precio),
-    thumbnail: (url al logo o foto del producto)
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Aspectos a incluir en el entregable:
-Implementar las rutas put y delete junto a las funciones necesarias (utilizar la estructura ya creada).
-Incorporar el Router de express en la url base '/api' y configurar todas las subrutas en base a este.
-Crear un espacio público de servidor que contenga un documento index.html con un formulario de ingreso de productos con los datos apropiados.
-Probar la funcionalidad con Postman y el formulario de ingreso de datos.
+CLASE 10:
+
+Entender qué es un motor de plantillas y su implementación en el backend.
+Creación de un motor de plantillas custom.
+Configurar y utilizar handlebars en nuestro proyecto de express.
 */
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 import express from 'express';
 import multer from 'multer';
-import { crearRouterApiProductos } from './RouterApiDesafio9.js';
+import { crearRouterApiProductos } from './RouterApiClase10.js';
 const app = express(); 
 import fs from "fs";
+import handlebars from 'express-handlebars';
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.use('/api', crearRouterApiProductos())
@@ -65,10 +54,13 @@ app.post('/subir', upload.single('miArchivo'),(req,res,next)=>{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CLASE 10
 //const fs = require('fs'); // este motor requiere el modulo fs 
+// motor de plantillas custom para express
 app.engine('ntl', function (filePath, options, callback) { // define el motor de plantilla
   fs.readFile(filePath, function (err, content) {
     if (err) return callback(new Error(err));
-    const rendered = content.toString().replace('#title#', ''+ options.title +'')
+    const rendered = content
+    .toString()
+    .replace('#title#', ''+ options.title +'')
     .replace('#message#', ''+ options.message +'');
     return callback(null, rendered);
   });
@@ -83,6 +75,83 @@ app.get("/prueba", (req, res) => {
         message: "mensaje desde ntl",
     });
 });
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.engine('cte', function (filePath, options, callback) { // define el motor de plantilla
+    fs.readFile(filePath, function (err, content) {
+      if (err) return callback(new Error(err));
+      const rendered = content
+      .toString()
+      .replace("^^titulo$$", options.titulo)
+      .replace("^^mensaje$$", options.mensaje)
+      .replace("^^autor$$", options.autor)
+      .replace("^^version$$", options.version)
+      return callback(null, rendered);
+    });
+  });
+  app.set('views', './views'); // especifica el directorio de vistas
+  app.set('view engine', 'cte'); // registra el motor de plantillas
+  
+  
+  app.get("/prueba2", (req, res) => {
+      res.render("prueba2.cte", {
+          titulo: "titulo CTE",
+          mensaje: "probando CTE",
+          autor: "Emilio",
+          version: "1.1",
+
+      });
+  });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+VENTAJAS DE HANDLEBAR
+
+desde el lado del servidor
+desde el lado del cliente.
+
+INSTALACION CON EXPRESS: npm install express-handlebars
+
+Transformar el primer desafío, pero esta vez la página dinámica la creará el servidor desde handlebars instalado y configurado para trabajar con express.
+Utilizar la misma estructura de plantilla HTML dentro de una pagina web con encabezado y el mismo objeto de datos.
+El servidor escuchará en el puerto 8080 y el resultado lo ofrecerá en su ruta root.
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let __dirname = path.resolve(path.dirname(""));
+
+*/ 
+
+// app.engine("hbs",
+//     handlebars({
+//         extname: "hbs",
+//         defaultLayout: "layout.hbs",
+//         layoutDir: "/views",
+//         partialsDir: "/views/partials",
+//     })
+// );
+
+//   app.set('views', './views'); // especifica el directorio de vistas
+//   app.set('view engine', 'hbs'); // registra el motor de plantillas
+  
+  
+//   app.get("/prueba3", (req, res) => {
+//       res.render("prueba3", {
+//           titulo: "titulo CTE",
+//           mensaje: "probando CTE",
+//           autor: "Emilio",
+//           version: "1.1",
+
+//       });
+//   });
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const PORT = 7001

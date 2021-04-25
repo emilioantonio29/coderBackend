@@ -1,0 +1,46 @@
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1>Desafio 10: Handlebars</h1>      
+    {{!-- <p>Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive, mobile-first projects on the web.</p> --}}
+  </div>
+</div>
+
+<div class="container">
+  {{!-- <p>This is some text.</p>       --}}
+  {{!-- <p>This is another text.</p>       --}}
+</div>
+{{!-- DESAFIO 10 HANDLEBARS --}}
+{{!-- LISTADO DE PRODUCTOS / GET --}}
+{{#if errorNoInventario}}
+    <div class="container"> 
+        <h1 style="color: blue;">{{errorNoInventario}}</h1>
+        <div class="d-flex justify-content-center align-items-center" style="height:50vh">
+            <img src="https://www.iamqatar.qa/assets/images/no-products-found.png" alt="">
+        </div>
+    </div>
+{{else}}
+    <div class="container"> 
+        <h1 style="color: blue;">Listado de Productos</h1>
+        <table class="table table-hover table-dark">
+        <thead>
+            <tr>
+            <th scope="col">NOMBRE</th>
+            <th scope="col">PRECIO</th>
+            <th scope="col">FOTO</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each USERS_DB}} 
+            <tr>
+            <td>{{this.title}}</td>
+            <td>{{this.price}}</td>
+            <td><img src="{{this.thumbnail}}" alt="" height="50px"></td>
+            </tr>
+            {{/each}}
+        </tbody>
+        </table>
+    </div>
+
+
+{{/if}}
