@@ -9,13 +9,13 @@ Configurar y utilizar handlebars en nuestro proyecto de express.
 
 import express from 'express';
 import multer from 'multer';
-import { crearRouterApiProductos } from './RouterApiClase10.js';
+// import { crearRouterApiProductos } from './RouterApiClase10.js';
 const app = express(); 
 import fs from "fs";
-import handlebars from 'express-handlebars';
+// import handlebars from 'express-handlebars';
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.use('/api', crearRouterApiProductos())
+// app.use('/api', crearRouterApiProductos())
 app.use(express.static('public'));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
