@@ -17,7 +17,7 @@
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "start": "node src/clase11/desafio11pug.js"
+    "start": "node src/clase11/desafio11ejs.js"
   },
   "author": "",
   "license": "ISC"

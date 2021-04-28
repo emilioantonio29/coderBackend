@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>DESAFIO 11 EJS</title>
+</head>
+<body>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1>Desafio 11: EJS</h1>      
+        </div>
+      </div>
+      
+      <div class="container">
+
+      </div>
+
+      <% if(!USERS_DB){ %>
+          <div class="container"> 
+              <h1 style="color: blue;">No hay productos en el inventario</h1>
+              <div class="d-flex justify-content-center align-items-center" style="height:50vh">
+                  <img src="https://www.iamqatar.qa/assets/images/no-products-found.png" alt="">
+              </div>
+          </div>
+        <% } else { %>
+          <div class="container"> 
+              <h1 style="color: blue;">Listado de Productos</h1>
+              <table class="table table-hover table-dark">
+              <thead>
+                  <tr>
+                  <th scope="col">NOMBRE</th>
+                  <th scope="col">PRECIO</th>
+                  <th scope="col">FOTO</th>
+                  </tr>
+              </thead>
+              <tbody>
+                <% for (const producto of USERS_DB) {%>
+                    <tr>
+                        <td><%=producto.title%></td>
+                        <td><%=producto.price%></td>
+                        <td><img src=<%=producto.thumbnail%> alt="" height="50px"></td>
+                    </tr>
+                    <%};%>
+              </tbody>
+              </table>
+          </div>
+        <% } %>
+</body>
+</html>
