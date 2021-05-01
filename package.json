@@ -18,8 +18,8 @@
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "start": "node src/clase12/desafio12.js"
+    "start": "node src/clase13/clase13Glitch.js"
   },
-  "author": "",
+  "author": "Emilio Martinez",
   "license": "ISC"
 }
