@@ -109,11 +109,11 @@ const replacer = id => {
                     `
                     <br><br>
                     <div class="card" style="width: 18rem;">
-                        <img src="${data.thumbnail}" class="card-img-top" alt="...">
+                        <img src="${data[0].thumbnail}" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">${data.title}</h5>
+                            <h5 class="card-title">${data[0].title}</h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary" onclick="deleteServer(${data.id})">Borrar</a>
+                            <a href="#" class="btn btn-primary" onclick="deleteServer(${data[0].id})">Borrar</a>
                         </div>
                     </div>
                     <br><br>
@@ -127,17 +127,17 @@ const replacer = id => {
                         <div class="card card-body">
                             <div class="form-group">
                                 <label for="id">ID:</label>
-                                <input readonly type="id" class="form-control" id="id" placeholder="1" value=${data.id}>
+                                <input readonly type="id" class="form-control" id="id" placeholder="1" value=${data[0].id}>
                                 <br>
                                 <label for="title">Title</label>
-                                <input  type="text" class="form-control" id="title" placeholder="Seiya de Pegaso" value=${data.title}>
+                                <input  type="text" class="form-control" id="title" placeholder="Seiya de Pegaso" value=${data[0].title}>
                                 <br>
                                 <label for="price">Price</label>
-                                <input  type="number" class="form-control" id="price" placeholder="999" value=${data.price}>
+                                <input  type="number" class="form-control" id="price" placeholder="999" value=${data[0].price}>
                                 <br>
                                 <label for="thumbnail">Thumbnail</label>
                                 <input  type="text" class="form-control" id="thumbnail" placeholder="https://loscaballerosdelzodiaco.000webhostapp.com/imagenes/cisne.png" 
-                                value=${data.thumbnail}>
+                                value=${data[0].thumbnail}>
                             </div>
                             <button onclick="editarProducto()" class="btn btn-success">Guardar</button>
 
