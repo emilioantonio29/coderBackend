@@ -95,6 +95,17 @@ mongoose.connect('mongodb://localhost/ecommerce', {
       .then((articulos) => {
         console.log(articulos)
       })
+      .then(() => {
+        //----------------------------------------------------------------------------
+        console.log('==================================================================')
+        console.log('TEST: traer id mas alto')
+        console.log('----------------------------------------------------------------->')
+        //----------------------------------------------------------------------------
+        return ArticulosDAO.findOne().sort( { id: -1 } )
+      })
+      .then((data) => {
+        console.log(data.id)
+      })
       .catch(err => { throw new Error(`Error en lectura ${err}`) })
       .finally(() => {
         mongoose.disconnect().catch(err => { throw new Error('error al desconectar la base de datos') })
