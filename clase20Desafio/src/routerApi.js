@@ -150,7 +150,8 @@ function routerApi(){
             return ArticulosDAO.create(data)
         })
         .then((producto)=>{
-            res.status(200).json(producto);
+           res.status(200).json(producto);
+
         }).catch((err)=>{
             console.log(err)
         })

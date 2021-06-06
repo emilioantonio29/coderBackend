@@ -1,5 +1,5 @@
 // const socket = io(); // Ya podemos empezar a usar los sockets desde el cliente :)
-
+var database = "mongoDBaaS"
 
 
 // socket.on('messages', data => {
@@ -230,9 +230,41 @@ const editarProducto = () =>{
 }
 
 const alta = () =>{
-    if(confirm(`Caballero Agregado Correctamente`)){
-            location.replace("/productos") 
+    // if(confirm(`Caballero Agregado Correctamente`)){
+    //         location.replace("/productos") 
+    //     }
+    //location.replace("/productos") 
+    console.log("alta")
+    var titleA = document.getElementById("titleA").value;
+    var priceA = parseInt(document.getElementById("priceA").value);
+    var thumbnailA = document.getElementById("thumbnailA").value;
+    console.log(`${titleA},${priceA},${thumbnailA}`)
+    fetch(`api/productos`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "title": `${titleA}`,
+            "price": parseInt(priceA),
+            "thumbnail": `${thumbnailA}`
+        })
+    })
+    .then(response => {
+        return response.json()
+        // if(confirm('Caballero Eliminado Correctamente')){
+        //     location.replace("/productos") 
+        // }
+    })
+    .then(data => {
+        console.log(data)
+        // console.log(data[Object.keys(data)[0]].title)
+        if(confirm(`Item dado de alta correctamente`)){
+            document.getElementById("altaForm").reset(); 
+            location.replace("/alta") 
         }
+    })
+    .catch(error => console.log(error))
 }
 
 // function render(data){
@@ -284,3 +316,22 @@ const alta = () =>{
 //     document.getElementById("formSender").reset();
 //     // socket.emit("act")
 // })
+
+/*funciones DB*/
+
+var database = "mongoDBaaS"
+
+function noDb(){
+    
+    alert("No se seleccionó ninguna base; por defecto se guardaran los datos en mongoDBaaS")
+}
+
+function dbSelect(){
+    database = document.getElementById("db").value;
+    console.log(database)
+
+}
+
+function dbSeleccionada(){
+    alert("base seleccionada: "+ database)
+}

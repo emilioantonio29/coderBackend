@@ -1,5 +1,7 @@
 import express from 'express';
 
+
+
 // funcion para crear el router, cargar el middleware para convertir la tira de string del request a json, carga las rutas y vincula al manejador con el array de mascotass
 function routerRender(){
     
