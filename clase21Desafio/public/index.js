@@ -1,6 +1,17 @@
 // const socket = io(); // Ya podemos empezar a usar los sockets desde el cliente :)
-var database = "mongoDBaaS"
+var baseProducto = "MongoD"
+const db = () =>{
+    baseProducto = document.getElementById("db").value;
+    console.log(baseProducto)
 
+}
+
+
+function cambioBase(){
+    baseProducto = document.getElementById("db").value;
+    console.log(baseProducto)
+    renderProductos()
+}
 
 // socket.on('messages', data => {
 //     console.log(data)
@@ -25,7 +36,8 @@ var lista = document.getElementById("lista");
 
 // }
 
-fetch('http://localhost:7001/api/productos')
+const renderProductos = () => {
+    fetch(`/api/${baseProducto}/productos`)
     .then(res => res.json())
     .then(data => {
         console.log(data)
@@ -87,6 +99,8 @@ fetch('http://localhost:7001/api/productos')
     
         }
     });
+}
+renderProductos()
 
 let idDetalle = 1
 const replacer = id => {
@@ -100,7 +114,7 @@ const replacer = id => {
     detalle.style.display = "block";
     // var form = document.getElementById("form");
     // form.style.display = "none";
-    fetch(`http://localhost:7001/api/productos/${id}`)
+    fetch(`/api/${baseProducto}/productos/${id}`)
         .then(res => res.json())
         .then(data => {
             console.log(data.title)
@@ -179,7 +193,7 @@ const replacer = id => {
 }
 
 const deleteServer = id =>{
-    fetch(`api/productos/${id}`, {
+    fetch(`api/${baseProducto}/productos/${id}`, {
         method: 'DELETE',
         headers: {
         'Content-Type': 'application/json'
@@ -201,7 +215,7 @@ const editarProducto = () =>{
     var thumbnailF = document.getElementById("thumbnail").value;
     console.log(`${idF},${titleF},${priceF},${thumbnailF}`)
     console.log(typeof(idF))
-    fetch(`api/productos/${idF}`, {
+    fetch(`api/${baseProducto}/productos/${idF}`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json'
@@ -229,7 +243,7 @@ const editarProducto = () =>{
     .catch(error => alert("hubo un error"))
 }
 
-const alta = () =>{
+const altaS = () =>{
     // if(confirm(`Caballero Agregado Correctamente`)){
     //         location.replace("/productos") 
     //     }
@@ -239,7 +253,7 @@ const alta = () =>{
     var priceA = parseInt(document.getElementById("priceA").value);
     var thumbnailA = document.getElementById("thumbnailA").value;
     console.log(`${titleA},${priceA},${thumbnailA}`)
-    fetch(`api/productos`, {
+    fetch(`api/${baseProducto}/productos`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'

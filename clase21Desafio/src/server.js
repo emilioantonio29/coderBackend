@@ -25,14 +25,22 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import express from 'express';
 import multer from 'multer';
-import { routerApi } from './routerApi.js';
+import { routerApiMongoD } from './routerApiMongoD.js';
+import { routerApiMongoDBaaS } from './routerApiMongoDBaaS.js';
+import { routerApiSQLite3 } from './routerApiSQLite3.js';
+// import { routerApiMySql } from './routerApiMySql.js';
+// import { routerApiSQLite3 } from './routerApiSQLite3.js';
 import { routerRender } from './routerRender.js';
 const app = express(); 
 import fs from "fs";
 import handlebars from "express-handlebars"
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.use('/api', routerApi())
+app.use('/api/MongoD', routerApiMongoD())
+app.use('/api/MongoDBaaS', routerApiMongoDBaaS())
+app.use('/api/SQLite3', routerApiSQLite3())
+// app.use('/api/MySql', routerApiMySql())
 app.use('/', routerRender())
 app.use(express.static('public'));
 

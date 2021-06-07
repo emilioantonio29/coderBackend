@@ -28,7 +28,7 @@ class ArticulosDB{
         return this.knex.schema.dropTableIfExists('articulos').then(()=>{
             return this.knex.schema.createTable('articulos', table =>{
                 table.increments('id').primary();
-                table.string('title',100).notNullable();
+                table.string('title',255).notNullable();
                 table.float('price');
                 table.string('thumbnail',255).notNullable();
             })
