@@ -1,5 +1,5 @@
 import express from 'express';
-import ArticulosDB from './db.js'
+import {ArticulosDB, ArticulosDBMySql} from './db.js'
 
 const articulosMock = [
     {
@@ -33,44 +33,9 @@ const articulosMock = [
         //id: 5
     }
 ]
-/* --------------------------------------------------------------------------------------- */
-/*               Conexión a la base de datos: Borro la tabla y creo productos              */
-/* --------------------------------------------------------------------------------------- */
-/*
-/*CREATE USER 'emilio'@'localhost' IDENTIFIED BY 'test';
-GRANT ALL PRIVILEGES ON *.* TO 'emilio'@'localhost';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON coderhouse.* TO 'emilio'@'localhost';
-FLUSH PRIVILEGES;*/
-const config = {
-    client: 'mysql',
-    connection: {
-        host: 'localhost',
-        user: 'emilio',
-        password: 'test',
-        database: 'coderhouse'
-    }
-}
-// const config = {
-//     client: 'sqlite3',
-//     connection: {filename:"./DB.sqlite3"}
-// }
-const articulosDB = new ArticulosDB(config)
-
-articulosDB.crearTabla().then(()=>{
-    console.log("createTableOk")
-    return articulosDB.insertar(articulosMock)
-}).then(()=>{
-    console.log("insertOk")
-}).catch((err)=>{
-    console.log(err)
-})
-.finally(()=>{
-    // articulosDB.cerrar()
-})
-
 
 // funcion para crear el router, cargar el middleware para convertir la tira de string del request a json, carga las rutas y vincula al manejador con el array de mascotass
-function routerApiSQLite3(){
+function routerApiMySql(){
     
     const routerApiProductos = express.Router()
     routerApiProductos.use(express.json())
@@ -82,25 +47,61 @@ function routerApiSQLite3(){
     })
     //GET DATA
     routerApiProductos.get("/productos", (req, res)=>{
+        const configMySql = {
+            client: 'mysql',
+            connection: {
+                host: 'localhost',
+                user: 'emilio',
+                password: 'test',
+                database: 'coderhouse'
+            }
+        }
+        const ArticulosDB2 = new ArticulosDBMySql(configMySql)
         if(articulosMock.length<1){
             return res.json({error: "no hay productos agregados"})
         }
-        articulosDB.listar().then((listado)=>{
-            res.json(listado)
-        })
+        ArticulosDB2.listar()
+            .then((listado)=>{
+                res.json(listado)
+            })
+            .then(()=>{
+                console.log("SQLite3 productos entregados")
+            })
+            .catch(err => { throw new Error(`Error de conexion: ${err}`) })
+            .finally(() => {
+                ArticulosDB2.cerrar()
+            })
     })
     routerApiProductos.get("/productos/:id", (req, res)=>{
+        const configMySql = {
+            client: 'mysql',
+            connection: {
+                host: 'localhost',
+                user: 'emilio',
+                password: 'test',
+                database: 'coderhouse'
+            }
+        }
+        const ArticulosDB2 = new ArticulosDBMySql(configMySql)
         const {id} = req.params
         // const producto = USERS_DB.filter(product => product.price == parseInt(id))[0];
         let parseId = parseInt(id)
-        articulosDB.listarPorId(parseId).then((producto)=>{
-            if(producto){
-                console.log(producto)
-                return res.json(producto)
-            }else{
-                res.json({error: "producto no encontrado"})
-            }
-        })
+        ArticulosDB2.listarPorId(parseId)
+            .then((producto)=>{
+                if(producto){
+                    console.log(producto)
+                    return res.json(producto)
+                }else{
+                    res.json({error: "producto no encontrado"})
+                }
+            })
+            .then(()=>{
+                console.log("SQLite3 producto por ID entregado")
+            })
+            .catch(err => { throw new Error(`Error de conexion: ${err}`) })
+            .finally(() => {
+                ArticulosDB2.cerrar()
+            })
         // if(producto){
         //     return res.json(producto)
         // }
@@ -113,11 +114,26 @@ function routerApiSQLite3(){
         // data.id = USERS_DB.length +1;
         // USERS_DB.push(data);
         // res.status(200).json(data);
-        articulosDB.insertar(data)
+        const configMySql = {
+            client: 'mysql',
+            connection: {
+                host: 'localhost',
+                user: 'emilio',
+                password: 'test',
+                database: 'coderhouse'
+            }
+        }
+        const ArticulosDB2 = new ArticulosDBMySql(configMySql)
+        ArticulosDB2.insertar(data)
             .then((producto)=>{
                 res.status(200).json(data);
-            }).catch((err)=>{
-                console.log(err)
+            })
+            .then(()=>{
+                console.log("SQLite3 productos agregado")
+            })
+            .catch(err => { throw new Error(`Error de conexion: ${err}`) })
+            .finally(() => {
+                ArticulosDB2.cerrar()
             })
     })
 
@@ -130,12 +146,30 @@ function routerApiSQLite3(){
         }
         let parseId = parseInt(id)
         // const producto = USERS_DB.filter(product => product.id == parseInt(id))[0];
-        articulosDB.actualizarStockPorId(parseId,data.title,data.price,data.thumbnail).then((producto)=>{
+        const configMySql = {
+            client: 'mysql',
+            connection: {
+                host: 'localhost',
+                user: 'emilio',
+                password: 'test',
+                database: 'coderhouse'
+            }
+        }
+        const ArticulosDB2 = new ArticulosDBMySql(configMySql)
+        ArticulosDB2.actualizarStockPorId(parseId,data.title,data.price,data.thumbnail)
+        .then((producto)=>{
             if(!producto){
                 return res.json({error: "No hay productos con ese ID"})
             }else{
                 return res.json({"El producto quedó Actualizado de la siguiente forma": producto})
             }
+        })
+        .then(()=>{
+            console.log("SQLite3 producto actualizado")
+        })
+        .catch(err => { throw new Error(`Error de conexion: ${err}`) })
+        .finally(() => {
+            ArticulosDB2.cerrar()
         })
         // if(!producto){
         //     return res.json({error: "No hay productos con ese ID"})
@@ -164,7 +198,18 @@ function routerApiSQLite3(){
         // const devolver = USERS_DB.filter(user => user.id === parseInt(id))
         // USERS_DB = USERS_DB.filter(user => user.id !== parseInt(id));
         // res.json({productoEliminado: devolver})//el delete no suele enviar dato
-        articulosDB.borrarPorId(parseId).then((producto)=>{
+        const configMySql = {
+            client: 'mysql',
+            connection: {
+                host: 'localhost',
+                user: 'emilio',
+                password: 'test',
+                database: 'coderhouse'
+            }
+        }
+        const ArticulosDB2 = new ArticulosDBMySql(configMySql)
+        ArticulosDB2.borrarPorId(parseId)
+        .then((producto)=>{
             if(producto){
                 console.log(producto)
                 return res.json({productoEliminado: producto})//el delete no suele enviar dato
@@ -172,9 +217,16 @@ function routerApiSQLite3(){
                 res.json({error: "producto no encontrado; no se pudo eliminar"})
             }
         })
+        .then(()=>{
+            console.log("SQLite3 productos eliminado")
+        })
+        .catch(err => { throw new Error(`Error de conexion: ${err}`) })
+        .finally(() => {
+            ArticulosDB2.cerrar()
+        })
     })
 
     return routerApiProductos;
 
 }
-export {routerApiSQLite3}
+export {routerApiMySql}
