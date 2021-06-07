@@ -7,7 +7,6 @@ const knex = require('knex')(opcions)
 const knex = require('knex')
 const knexObj = knex(option)*/
 
-
 class ArticulosDB{
     constructor(config){
         // const knex = knexFun({
