@@ -31,6 +31,7 @@ import { routerApiSQLite3 } from './routerApiSQLite3.js';
 import { routerApiMySql } from './routerApiMySql.js'
 // import { routerApiFirebase } from './routerApiFirebase.js';
 import { routerRender } from './routerRender.js';
+import { routerFaker } from './routerFaker.js'
 const app = express(); 
 import fs from "fs";
 import handlebars from "express-handlebars"
@@ -41,6 +42,7 @@ app.use('/api/MongoD', routerApiMongoD())
 app.use('/api/MongoDBaaS', routerApiMongoDBaaS())
 app.use('/api/SQLite3', routerApiSQLite3())
 app.use('/api/MySql', routerApiMySql())
+app.use('/productos', routerFaker())
 app.use('/', routerRender())
 app.use(express.static('public'));
 
