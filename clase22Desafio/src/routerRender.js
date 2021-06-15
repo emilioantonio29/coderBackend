@@ -22,6 +22,11 @@ function routerRender(){
             bienvenida: "Formulario de alta de productos:"
         });
     })
+    routerApiProductos.get('/mensajes', (req, res) =>{
+        res.render("mensajes", {
+            bienvenida: "Centro de Mensajes:"
+        });
+    })
     //GET DATA
     routerApiProductos.get("/productos", (req, res)=>{
         res.render("productos", {

@@ -1,4 +1,5 @@
 // const socket = io(); // Ya podemos empezar a usar los sockets desde el cliente :)
+console.log("test")
 var baseProducto = "MongoD"
 const db = () =>{
     baseProducto = document.getElementById("db").value;

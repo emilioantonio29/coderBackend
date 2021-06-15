@@ -2,6 +2,10 @@ import express from 'express';
 import { routerApiMongoDBaaS, ArticulosDAODBaaS } from './routerApiMongoDBaaS.js';
 //import ArticulosDB from './db.js'
 import mongoose from 'mongoose'
+import pkg from "normalizr";
+import utils from "util";
+
+const { denormalize, normalize, schema } = pkg;
 const SchemaLocal = mongoose.Schema
 
 const articulosSchemaLocal = new SchemaLocal({
@@ -10,7 +14,15 @@ const articulosSchemaLocal = new SchemaLocal({
     thumbnail: {type: String},
     id: {type: Number}
 })
+const mensajesSchemaLocal = new SchemaLocal({
+    email: {type: String},
+    nombre: {type: String},
+    apellido: {type: String},
+    mensaje: {type: String},
+    id: {type: Number}
+})
 const ArticulosDAOLocal = mongoose.model('articulosLocal', articulosSchemaLocal)
+const MensajesDAOLocal = mongoose.model('mensajesLocal', mensajesSchemaLocal)
 
 
 const articulosMock = [
@@ -86,6 +98,32 @@ function routerApiMongoD(){
         res.json({saludo:"Bienvenido a la raiz de la ruta API"})
     })
     //GET DATA
+    routerApiProductos.get("/mensajes", (req, res)=>{
+        mongoose.connect('mongodb://localhost/productos', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        })
+        .then(() => {
+            return MensajesDAOLocal.find().then((mensajes)=>{
+                if(mensajes.length<1){
+                    return res.json({error: "no hay mensajes"})
+                }
+                else{
+                    return res.json(mensajes)
+                }
+            })
+        })
+        .then((data) => {
+            console.log("lista de mensajes entregada")
+        })
+        .catch(err => { throw new Error(`Error de conexion: ${err}`) })
+        .finally(() => {
+            mongoose.disconnect().catch(err => { throw new Error('error al desconectar la base de datos') })
+        })
+
+    })
+    //GET DATA
     routerApiProductos.get("/productos", (req, res)=>{
         mongoose.connect('mongodb://localhost/productos', {
             useNewUrlParser: true,
@@ -145,11 +183,13 @@ function routerApiMongoD(){
     //SEND DATA
     routerApiProductos.post("/productos", (req, res)=>{
         const data = req.body;
+        console.log("===========================")
         console.log(data)
         // data.id = articulos.length +1;
         // articulos.push(data);
         // res.status(200).json(data);
         let idPush = 1
+        //const originalData = 
         mongoose.connect('mongodb://localhost/productos', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -184,6 +224,69 @@ function routerApiMongoD(){
         })
 
     })
+    //SEND DATA
+    routerApiProductos.post("/mensajes", (req, res)=>{
+        const data = req.body;
+        //console.log("===========================")
+        console.log(data)
+        const originalData = data;
+        console.log("/* -------------- ORIGINAL ------------- */");
+        console.log(utils.inspect(originalData, false, 4, true));
+        console.log("length", JSON.stringify(originalData).length);
+
+        // Define your comments schema
+        const author = new schema.Entity("authors");
+
+        const Comemnt = new schema.Entity("comments")
+
+        // Define your article
+        const article = new schema.Entity("articles", {
+        author: author,
+        comments: Comemnt,
+        });
+
+        const normalizedData = normalize(originalData, article);
+        console.log("/* -------------- NORMALIZED ------------- */");
+        console.log(utils.inspect(normalizedData, false, 4, true));
+        console.log("length", JSON.stringify(normalizedData).length);
+        let idPush = 1
+        mongoose.connect('mongodb://localhost/productos', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        })
+        .then(() => {
+            return MensajesDAOLocal.findOne().sort( { id: -1 })
+        })
+        .then((find) => {
+            if(find === null){
+                return idPush
+            }else{
+                idPush = find.id+1
+            }
+        })
+        .then(() => {
+            data.id = idPush
+            return MensajesDAOLocal.create(data)
+        })
+        .then((data) => {
+            console.log("producto creado correctamente")
+        })
+        .then((mensaje)=>{
+           res.status(200).json(mensaje);
+
+        })
+        .catch((err)=>{
+            console.log(err)
+        })
+        .finally(() => {
+            mongoose.disconnect().catch(err => { throw new Error('error al desconectar la base de datos') })
+        })
+
+    })
+
+
+
 
     // UPDATE
     routerApiProductos.put("/productos/:id", (req, res)=>{
