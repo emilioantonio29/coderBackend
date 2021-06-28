@@ -1,20 +1,35 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-
+// import FS from 'session-file-store';
+import MS from 'connect-mongo';
 
 // funcion para crear el router, cargar el middleware para convertir la tira de string del request a json, carga las rutas y vincula al manejador con el array de mascotass
 function routerRender(){
-    
+
+    //const MongoStore = MS(session)
+    // const FileStore = FS(session)
     const routerApiProductos = express.Router()
     routerApiProductos.use(express.json())
     routerApiProductos.use(express.urlencoded({extended: true}))
     routerApiProductos.use(cookieParser())
+    // routerApiProductos.use(session({
+    //     store: new FileStore({path:'./sesiones',ttl:300,retries:0}),
+    //     secret: 'dontUseVar',
+    //     resave: true,
+    //     saveUninitialized: true,
+    //     cookie: { maxAge: 10000 }
+    //   }))
+
     routerApiProductos.use(session({
+        store: MS.create(
+            {mongoUrl:'mongodb+srv://emilio:test@coderbackend.xuzrc.mongodb.net/sesiones?retryWrites=true&w=majority'
+            }),
+        ttl: 60,
         secret: 'dontUseVar',
         resave: true,
-        saveUninitialized: true,
-        cookie: { maxAge: 10000 }
+        saveUninitialized: true/*,
+        cookie: { maxAge: 10000 }*/
       }))
     
     var auth = function(req, res, next){
