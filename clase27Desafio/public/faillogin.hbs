@@ -28,7 +28,7 @@
     <button onclick="login()" class="btn btn-default" value="Agregar">Login</button> --}}
 
     <div class="card">
-        <div class="card-body">
+        {{!-- <div class="card-body">
             <p>Inicio de Sesión:</p>
             <br>
             <form action="/login" method="POST" role="form" autocomplete="off">
@@ -39,6 +39,12 @@
             <br>
             <input type="submit" class="btn btn-dark" value="Iniciar Sesión">
             </form>
+        </div> --}}
+        <div class="jumbotron text-center text-primary">
+            <h1><span class="fa fa-lock"></span> Inicio de sesión incorrecto</h1>
+            <br>
+            <!-- <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google"></span> SignIn with Google</a> -->
+            {{!-- <a href="/auth/twitter" class="btn btn-primary"><span class="fa fa-twitter"></span> Login con Twitter</a> --}}
         </div>
     </div>
 
@@ -46,7 +52,7 @@
 </div>
 <br>
 <div class="container">
-    <a class="nav-item nav-link" href="/registro">REGISTRO</a>
+    <a class="nav-item nav-link" href="/login">Inicio de sesión</a>
 
 </div>
 

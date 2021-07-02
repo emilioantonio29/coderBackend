@@ -67,7 +67,7 @@ app.set('views', './public'); // especifica el directorio de vistas
 app.set('view engine', 'hbs'); // registra el motor de plantillas
   
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const PORT = 7001
+const PORT = 8080
 const server = app.listen(PORT, () => {
     console.log(`Servidor http escuchando en el puert ${server.address().port}`)
 })

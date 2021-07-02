@@ -5,15 +5,20 @@ import session from 'express-session';
 import MS from 'connect-mongo';
 import mongoose from 'mongoose';
 import passport from 'passport';
-import passportLocalPkg from 'passport-local';
-const { Strategy: LocalStrategy } = passportLocalPkg;
+import passportPkg from 'passport-twitter';
+const { Strategy: TwitterStrategy } = passportPkg;
 const SchemaLocal = mongoose.Schema
 
-const userSchema = new SchemaLocal({
-    username: {type: String},
-    password: {type: String}
-})
-const UsuariosDAOLocal = mongoose.model('users', userSchema)
+
+const TWITTER_CLIENT_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+const TWITTER_CLIENT_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+
+
+// const userSchema = new SchemaLocal({
+//     username: {type: String},
+//     password: {type: String}
+// })
+// const UsuariosDAOLocal = mongoose.model('users', userSchema)
 // funcion para crear el router, cargar el middleware para convertir la tira de string del request a json, carga las rutas y vincula al manejador con el array de mascotass
 function routerRender(){
 
@@ -64,7 +69,28 @@ function routerRender(){
     // const expire = 60000
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PASSPORT
-passport.use('register', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+passport.use(new TwitterStrategy({
+    consumerKey: TWITTER_CLIENT_KEY,
+    consumerSecret: TWITTER_CLIENT_SECRET,
+    callbackURL: 'http://localhost:8080/auth/twitter/callback',
+}, function (token, tokenSecret, userProfile, done) {
+    console.log("===================================================> PASSPORT TwitterStrategy")
+    // const user = userProfile.displayName
+    console.log(userProfile)
+    return done(null, userProfile);
+}));
+
+passport.serializeUser(function (user, cb) {
+    console.log("===================================================> PASSPORT serializeUser")
+    cb(null, user);
+});
+
+passport.deserializeUser(function (obj, cb) {
+    console.log("===================================================> PASSPORT deserializeUser")
+
+    cb(null, obj);
+});
+/*passport.use('register', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
     console.log("===================================================> PASSPORT register")
   
     const userCreate = req.body
@@ -105,9 +131,9 @@ passport.use('register', new LocalStrategy({ passReqToCallback: true }, (req, us
         mongoose.disconnect().catch(err => { throw new Error('error al desconectar la base de datos') })
     })
   
-  }));
+  }));*/
 
-  passport.use('login', new LocalStrategy((username, password, done) => {
+  /*passport.use('login', new LocalStrategy((username, password, done) => {
     console.log("===================================================> PASSPORT LOGIN")
     console.log(username)
     mongoose.connect('mongodb://localhost/usuarios', {
@@ -140,9 +166,9 @@ passport.use('register', new LocalStrategy({ passReqToCallback: true }, (req, us
     })
   
   
-  }));
+  }));*/
   
-  passport.serializeUser(function (user, done) {
+  /*passport.serializeUser(function (user, done) {
     console.log("===================================================> PASSPORT serializeUser")
     console.log(user)
     done(null, user.username);
@@ -172,19 +198,19 @@ passport.use('register', new LocalStrategy({ passReqToCallback: true }, (req, us
         mongoose.disconnect().catch(err => { throw new Error('error al desconectar la base de datos') })
     })
   
-  });
-  function auth(req, res, next) {
-    if (req.isAuthenticated()) {
-        console.log("auth==============================>")
-        console.log(req.session.passport.user)
-      next()
-    } else {
-      //res.redirect('/login')
-        return res.render("login", {
-            bienvenida: "Para ver el contenido, por favor inicia sesión"
-        });
-    }
-  }
+  });*/
+//   function auth(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         console.log("auth==============================>")
+//         console.log(req.session.passport.user)
+//       next()
+//     } else {
+//       //res.redirect('/login')
+//         return res.render("login", {
+//             bienvenida: "Para ver el contenido, por favor inicia sesión"
+//         });
+//     }
+//   }
 //   var auth = function(req, res, next){
 //     if(req.session.nombre){
 //         return next();
@@ -201,22 +227,45 @@ const expire = 60000
     routerApiProductos.post('/login', passport.authenticate('login', { failureRedirect: '/login', successRedirect: '/' }))
 
     routerApiProductos.post('/registro', passport.authenticate('register', { failureRedirect: '/registroIncorrecto', successRedirect: '/' }))
+    routerApiProductos.get('/auth/twitter', passport.authenticate('twitter'));
 
+    routerApiProductos.get('/auth/twitter/callback', passport.authenticate('twitter', {
+        successRedirect: '/',
+        failureRedirect: '/faillogin'
+    }));
+    
+    routerApiProductos.get('/faillogin', (req, res) => {
+        res.render('login-error', {});
+    })
 
-    routerApiProductos.get('/', auth, (req, res) =>{
-        console.log("===================================================> GET /")
-        req.session.cookie.maxAge = expire
-        res.render("index", {
-            bienvenida: "¡Bienvenid@s al proyecto!",
-            login: `Bienvenid@ ${req.session.passport.user}`
-        });
+    routerApiProductos.get('/', (req, res) =>{
+        if (req.isAuthenticated()) {
+            console.log("===================================================> GET /")
+
+            // console.log(req.body)
+            // console.log("===================================================> GET /")
+            // console.log(req.headers)
+            // console.log("===================================================> GET /")
+            // console.log(req.session)
+            console.log(req.session.passport.user.displayName)
+            req.session.cookie.maxAge = expire
+            res.render("index", {
+                bienvenida: "¡Bienvenid@s al proyecto!",
+                login: `Bienvenid@ ${req.session.passport.user.displayName}`
+            });
+        }else{
+          //res.redirect('/login')
+            return res.render("login", {
+                bienvenida: "Para ver el contenido, por favor inicia sesión"
+            });
+        }
     })
     routerApiProductos.get('/login', (req, res) =>{
         
         if(req.session.passport){
             res.render("login", {
-                bienvenida: `Bienvenid@ ${req.session.nombre.nombre}, Ya iniciaste Sesión`,
-                login: `Bienvenid@ ${req.session.passport.user}`
+                bienvenida: `Bienvenid@ ${req.session.passport.user.displayName}, Ya iniciaste Sesión`,
+                login: `Bienvenid@ ${req.session.passport.user.displayName}`
             });
         }else{
             res.render("login", {
@@ -270,27 +319,48 @@ const expire = 60000
     // })
 
 
-    routerApiProductos.get('/alta', auth, (req, res) =>{
-        req.session.cookie.maxAge = expire
-        res.render("alta", {
-            bienvenida: "Formulario de alta de productos:",
-            login: `Bienvenid@ ${req.session.passport.user}`
-        });
+    routerApiProductos.get('/alta',  (req, res) =>{
+        if (req.isAuthenticated()) {
+            req.session.cookie.maxAge = expire
+            res.render("alta", {
+                bienvenida: "Formulario de alta de productos:",
+                login: `Bienvenid@ ${req.session.passport.user.displayName}`
+            });
+        }else{
+          //res.redirect('/login')
+            return res.render("login", {
+                bienvenida: "Para ver el contenido, por favor inicia sesión"
+            });
+        }
     })
-    routerApiProductos.get('/mensajes', auth, (req, res) =>{
-        req.session.cookie.maxAge = expire
-        res.render("mensajes", {
-            bienvenida: "Centro de Mensajes:",
-            login: `Bienvenid@ ${req.session.passport.user}`
-        });
+    routerApiProductos.get('/mensajes',  (req, res) =>{
+        if (req.isAuthenticated()) {
+            req.session.cookie.maxAge = expire
+            res.render("mensajes", {
+                bienvenida: "Centro de Mensajes:",
+                login: `Bienvenid@ ${req.session.passport.user.displayName}`
+            });
+        }else{
+          //res.redirect('/login')
+            return res.render("login", {
+                bienvenida: "Para ver el contenido, por favor inicia sesión"
+            });
+        }
     })
     //GET DATA
-    routerApiProductos.get("/productos", auth, (req, res)=>{
-        req.session.cookie.maxAge = expire
-        res.render("productos", {
-            bienvenida: "¡Bienvenid@s al proyecto!",
-            login: `Bienvenid@ ${req.session.passport.user}`
-        });
+    routerApiProductos.get("/productos",  (req, res)=>{
+        if (req.isAuthenticated()) {
+            req.session.cookie.maxAge = expire
+            res.render("productos", {
+                bienvenida: "¡Bienvenid@s al proyecto!",
+                login: `Bienvenid@ ${req.session.passport.user.displayName}`
+            });
+        }else{
+          //res.redirect('/login')
+            return res.render("login", {
+                bienvenida: "Para ver el contenido, por favor inicia sesión"
+            });
+        }
     })
     routerApiProductos.get('/logout', (req, res) => {
         //let name =  req.session.nombre.nombre
@@ -312,7 +382,7 @@ const expire = 60000
         //       })
         // }
         if(req.session.passport){
-            let name =  req.session.passport.user
+            let name =  req.session.passport.user.displayName
             req.session.destroy(err => {
                 if (err) {
                   res.json({ error: 'logout', body: err })
