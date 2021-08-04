@@ -10,7 +10,7 @@ const { Strategy: TwitterStrategy } = passportPkg;
 const SchemaLocal = mongoose.Schema
 //import { fork } from 'child_process';
 //const { fork } = child_processPkg;
-import * as child from 'child_process';
+//import * as child from 'child_process';
 // var ChildProcess = child.exec('dir');
 // console.log("--->"+ChildProcess)
 import path from 'path';
@@ -19,7 +19,7 @@ console.log("path")
 console.log(process.cwd())
 console.log(__dirname)
 
-
+/*
 const ls = child.exec('dir', function (error, stdout, stderr) {
     if (error) {
       console.log(error.stack);
@@ -32,7 +32,7 @@ const ls = child.exec('dir', function (error, stdout, stderr) {
   
   ls.on('exit', function (code) {
     console.log('Child process exited with exit code '+code);
-  });
+  });*/
 
 const TWITTER_CLIENT_KEY = process.argv[2] ? process.argv[2] : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 const TWITTER_CLIENT_SECRET = process.argv[3] ? process.argv[3] : "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -347,22 +347,34 @@ const expire = 60000
         });
     })
 
+    const calcular = () =>{
+        let sum = 0
+        for(i=0;i<6e9;i++){
+            sum++
+        }
+        return sum;
+    }
     routerApiProductos.get('/randoms', (req, res) =>{
         console.log(req.query.cant)
         const cantVariable = req.query.cant ? req.query.cant : 100000000
-        const calcular_child = child.fork(`./ramdonFork.js`);
-        console.log("test1")
-        //const calcular_child = fork("./randomFork.js")
-        calcular_child.send("start")
-        console.log("test2")
-        process.on("message", cal =>{
-            res.render("randoms", {
-                info: cal,
-            });
-        })
+        // const calcular_child = child.fork(`./ramdonFork.js`);
+        // console.log("test1")
+        // //const calcular_child = fork("./randomFork.js")
+        // calcular_child.send("start")
+        // console.log("test2")
+        // process.on("message", cal =>{
+        //     res.render("randoms", {
+        //         info: cal,
+        //     });
+        // })
         // res.render("randoms", {
         //     info: "test",
         // });
+        const cal = calcular();
+        res.render("randoms", {
+            info: cal,
+        });
+
     })
 
     // routerApiProductos.get('/loginAuth', (req, res) => {

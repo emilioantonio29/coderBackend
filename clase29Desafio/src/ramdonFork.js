@@ -1,12 +1,12 @@
-// const num1 = 6e9
-// const num2 = 100000
-// const calcular = () =>{
-//     let sum = 0
-//     for(i=0;i<num2;i++){
-//         sum++
-//     }
-//     return sum;
-// }
+const num1 = 6e9
+const num2 = 100000
+const calcular = () =>{
+    let sum = 0
+    for(i=0;i<num2;i++){
+        sum++
+    }
+    return sum;
+}
 
 // process.on("message", msg =>{
 //     if(msg === "start"){

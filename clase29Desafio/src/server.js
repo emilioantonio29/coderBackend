@@ -23,6 +23,37 @@
 //     console.log('Servidor corriendo en http://localhost:8080');
 // })
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+                        PM2
+//tasklist /fi "imagename eq node.exe" -> lista todos los procesos de node.js activos
+//taskkill /pid numpid /f -> mata un proceso por su número de PID
+
+//npm i -g pm2
+//npm list -g | grep pm2
+
+// -------------- MODO FORK -------------------
+//pm2 start server.js --name="ServerX" --watch -- PORT
+//pm2 start server.js --name="Server1" --watch -- 8081
+//pm2 start server.js --name="Server2" --watch -- 8082
+
+// -------------- MODO CLUSTER -------------------
+//pm2 start server.js --name="ServerX" --watch -i max -- PORT
+//pm2 start server.js --name="Server3" --watch -i max -- 8083
+
+//pm2 list
+//pm2 delete id/name
+//pm2 desc name
+//pm2 monit
+//pm2 --help
+//pm2 logs
+//pm2 flush
+
+npm run prodPm2
+
+
+
+*/
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 import express from 'express';
 import multer from 'multer';
 import { routerApiMongoD } from './routerApiMongoD.js';
@@ -35,7 +66,7 @@ import { routerFaker } from './routerFaker.js'
 const app = express(); 
 import fs from "fs";
 import handlebars from "express-handlebars"
-
+import cluster from 'cluster';
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.use('/api/MongoD', routerApiMongoD())
@@ -65,13 +96,22 @@ app.engine("hbs",
 
 app.set('views', './public'); // especifica el directorio de vistas
 app.set('view engine', 'hbs'); // registra el motor de plantillas
-  
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// const PORT = 7001
+// const server = app.listen(PORT, () => {
+//     console.log(`Servidor http escuchando en el puert ${server.address().port}`)
+// })
+
+//const PORT = parseInt(process.argv[2]) || process.env.PORT || 8080
 const PORT = 7001
-const server = app.listen(PORT, () => {
-    console.log(`Servidor http escuchando en el puert ${server.address().port}`)
+app.listen(PORT, err => {
+    if (!err) console.log(`Servidor express escuchando en el puerto ${PORT} - PID WORKER ${process.pid}`)
 })
-server.on('error',(error) => {console.log(`error: ${error.message}`)})
+
+
+
+//server.on('error',(error) => {console.log(`error: ${error.message}`)})
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // para GLITCH:
 // server.listen(process.env.PORT, function() {
